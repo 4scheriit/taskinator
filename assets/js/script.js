@@ -1,5 +1,6 @@
 const formEl = document.querySelector("#task-form");
 const tasksToDoEl = document.querySelector("#tasks-to-do");
+const pageContentEl = document.querySelector("#page-content");
 let taskIdCounter = 0;
 
 const taskFormHandler = () =>
@@ -103,3 +104,27 @@ const createTaskActions = (taskId) =>
 
 formEl.addEventListener("submit", taskFormHandler);
 
+const taskButtonHandler = (event) =>
+{
+    
+    // get target element from event
+    let targetEl = event.target;
+  
+    if (targetEl.matches(".delete-btn")) 
+    {
+      console.log("delete", targetEl);
+      let taskId = targetEl.getAttribute("data-task-id");
+      deleteTask(taskId);
+    }
+};
+  
+const deleteTask = (taskId) =>
+{
+    console.log(taskId);
+
+    // find task list element with taskId value and remove it
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    taskSelected.remove();
+};
+
+pageContentEl.addEventListener("click", taskButtonHandler);
