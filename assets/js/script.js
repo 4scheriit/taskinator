@@ -3,33 +3,43 @@ const tasksToDoEl = document.querySelector("#tasks-to-do");
 const pageContentEl = document.querySelector("#page-content");
 let taskIdCounter = 0;
 
-const taskFormHandler = () =>
+const taskFormHandler = (event) => 
 {
     event.preventDefault();
-
     let taskNameInput = document.querySelector("input[name='task-name']").value;
     let taskTypeInput = document.querySelector("select[name='task-type']").value;
-
-    // package up data as an object
-    let taskDataObj = 
+  
+    // check if inputs are empty (validate)
+    if (taskNameInput === "" || taskTypeInput === "") 
     {
+      alert("You need to fill out the task form!");
+      return false;
+    }
+  
+    // reset form fields for next task to be entered
+    document.querySelector("input[name='task-name']").value = "";
+    document.querySelector("select[name='task-type']").selectedIndex = 0;
+  
+    // check if task is new or one being edited by seeing if it has a data-task-id attribute
+    let isEdit = formEl.hasAttribute("data-task-id");
+  
+    if (isEdit) 
+    {
+      let taskId = formEl.getAttribute("data-task-id");
+      completeEditTask(taskNameInput, taskTypeInput, taskId);
+    } 
+    else 
+    {
+      let taskDataObj = 
+      {
         name: taskNameInput,
         type: taskTypeInput
-    };
-
-    // check if input values are empty strings
-    if (!taskNameInput || !taskTypeInput) 
-    {
-        alert("You need to fill out the task form!");
-        return false;
+      };
+  
+      createTaskEl(taskDataObj);
     }
-
-    formEl.reset();
-
-    // send it as an argument to createTaskEl
-    createTaskEl(taskDataObj);
 };
-
+  
 const createTaskEl = (taskDataObj) =>
 {
     // create list item
@@ -102,7 +112,22 @@ const createTaskActions = (taskId) =>
     return actionContainerEl;
 };
 
-formEl.addEventListener("submit", taskFormHandler);
+const completeEditTask = (taskName, taskType, taskId) =>
+{
+    // find task list item with taskId value
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+  
+    // set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+  
+    alert("Task Updated!");
+  
+    // remove data attribute from form
+    formEl.removeAttribute("data-task-id");
+    // update formEl button to go back to saying "Add Task" instead of "Edit Task"
+    formEl.querySelector("#save-task").textContent = "Add Task";
+};
 
 const taskButtonHandler = (event) =>
 {
@@ -137,7 +162,7 @@ const editTask = (taskId) =>
     document.querySelector("input[name='task-name']").value = taskName;
     document.querySelector("select[name='task-type']").value = taskType;
     document.querySelector("#save-task").textContent = "Save Task";
-    
+
     formEl.setAttribute("data-task-id", taskId);
 };
   
@@ -150,4 +175,5 @@ const deleteTask = (taskId) =>
     taskSelected.remove();
 };
 
+formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
