@@ -110,12 +110,35 @@ const taskButtonHandler = (event) =>
     // get target element from event
     let targetEl = event.target;
   
-    if (targetEl.matches(".delete-btn")) 
+      // edit button was clicked
+    if (targetEl.matches(".edit-btn")) 
     {
-      console.log("delete", targetEl);
-      let taskId = targetEl.getAttribute("data-task-id");
-      deleteTask(taskId);
+        let taskId = targetEl.getAttribute("data-task-id");
+        editTask(taskId);
+    } 
+    // delete button was clicked
+    else if (targetEl.matches(".delete-btn")) 
+    {
+        let taskId = targetEl.getAttribute("data-task-id");
+        deleteTask(taskId);
     }
+};
+
+const editTask = (taskId) => 
+{
+    // get task list item element
+    let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    // get content from task name and type
+    let taskName = taskSelected.querySelector("h3.task-name").textContent;
+
+    let taskType = taskSelected.querySelector("span.task-type").textContent;
+
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+    document.querySelector("#save-task").textContent = "Save Task";
+    
+    formEl.setAttribute("data-task-id", taskId);
 };
   
 const deleteTask = (taskId) =>
