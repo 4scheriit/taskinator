@@ -218,8 +218,6 @@ const editTask = (taskId) =>
   
 const deleteTask = (taskId) =>
 {
-    console.log(taskId);
-
     // find task list element with taskId value and remove it
     let taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
     taskSelected.remove();
@@ -239,6 +237,11 @@ const deleteTask = (taskId) =>
 
     // reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr;
+};
+
+const saveTasks = () =>
+{
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
 formEl.addEventListener("submit", taskFormHandler);
